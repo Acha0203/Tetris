@@ -27,6 +27,9 @@ let tetro_y = 0;
 //フィールド本体
 let field = [];
 
+//落ちるスピード
+const GAME_SPEED = 1000;
+
 let can = document.getElementById('can');
 let con = can.getContext('2d');
 
@@ -36,6 +39,8 @@ can.style.border = '4px solid #555';
 
 init();
 drawAll();
+
+setInterval(dropTetro, GAME_SPEED);
 
 //初期化
 function init() {
@@ -47,9 +52,9 @@ function init() {
     }
   }
 
-  field[5][8] = 1;
-  field[19][9] = 1;
-  field[19][0] = 1;
+  // field[5][8] = 1;
+  // field[19][9] = 1;
+  // field[19][0] = 1;
 }
 
 //ブロック１つを描画する
@@ -121,6 +126,28 @@ function rotate() {
   }
 
   return ntetro;
+}
+
+// ブロックの落ちる処理
+function dropTetro() {
+  if (checkMove(0, 1)) tetro_y++;
+  else {
+    fixTetro();
+    tetro_x = 0;
+    tetro_y = 0;
+  }
+  drawAll();
+}
+
+//テトロを固定する
+function fixTetro() {
+  for (let y = 0; y < TETRO_SIZE; y++) {
+    for (let x = 0; x < TETRO_SIZE; x++) {
+      if (tetro[y][x]) {
+        field[tetro_y + y][tetro_x + x] = 1;
+      }
+    }
+  }
 }
 
 document.onkeydown = function (e) {
